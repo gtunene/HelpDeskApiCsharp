@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-
 namespace HelpDesk.Data
 {
     public class ApplicationDbContext: DbContext
@@ -12,10 +6,10 @@ namespace HelpDesk.Data
         {
         }
         public DbSet<UserModel> Users { get; set; }
-        public DbSet<TicketCategory> TicketCategories { get; set; }
-        public DbSet<TicketComment> TicketComments { get; set; }
-        public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<Priority> Priorities { get; set; }
+        public DbSet<TicketCategoryModel> TicketCategories { get; set; }
+        public DbSet<TicketCommentModel> TicketComments { get; set; }
+        public DbSet<TicketModel> Tickets { get; set; }
+        public DbSet<TicketPriorityModel> Priorities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,26 +17,26 @@ namespace HelpDesk.Data
                 .HasIndex(v => v.Email)
                 .IsUnique();
 
-            modelBuilder.Entity<TicketCategory>()
+            modelBuilder.Entity<TicketCategoryModel>()
                 .HasIndex(v => v.Name)
                 .IsUnique();
 
-            modelBuilder.Entity<Ticket>()
+            modelBuilder.Entity<TicketModel>()
                 .HasOne(v => v.Category)
                 .WithMany()
                 .HasForeignKey(v => v.CategoryId);
 
-            modelBuilder.Entity<TicketComment>()
+            modelBuilder.Entity<TicketCommentModel>()
                 .HasOne(v => v.User)
                 .WithMany()
                 .HasForeignKey(v => v.UserId);
 
-            modelBuilder.Entity<Ticket>()
+            modelBuilder.Entity<TicketModel>()
                 .HasOne(v => v.Priority)
                 .WithMany()
                 .HasForeignKey(v => v.PriorityId);
 
-            modelBuilder.Entity<Ticket>()
+            modelBuilder.Entity<TicketModel>()
                 .HasOne(v => v.User)
                 .WithMany()
                 .HasForeignKey(v => v.UserId);

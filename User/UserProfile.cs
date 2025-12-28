@@ -1,11 +1,9 @@
-using AutoMapper;
-
 namespace HelpDesk.User;
-
 public class UserProfile : Profile
 {
     public UserProfile()
     {
-        CreateMap<UserDTO, UserModel>();
+        CreateMap<UserCreateDTO, UserModel>().ReverseMap();
+        CreateMap<UserLoginDTO, UserModel>().ReverseMap();
     }
 }

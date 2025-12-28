@@ -1,10 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace HelpDesk.Models;
+namespace HelpDesk.Ticket;
 
 [Table("ticket_comments")]
-public class TicketComment
+public class TicketCommentModel
 {
     [Key]
     public int Id { get; set; }
@@ -16,7 +13,7 @@ public class TicketComment
 
     [Required]
     public int TicketId { get; set; }
-    public Ticket Ticket { get; set; } = null!;
+    public TicketModel Ticket { get; set; } = null!;
 
     [Required]
     public int UserId { get; set; }

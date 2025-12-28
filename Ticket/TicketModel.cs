@@ -1,16 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-
-namespace HelpDesk.Models
+namespace HelpDesk.Ticket
 {
 
 [Table("tickets")]
-public class Ticket
+public class TicketModel
 {
     [Key]
     public int Id { get; set; }
@@ -36,10 +28,10 @@ public class Ticket
 
     [Required]
     public int CategoryId { get; set; }
-    public TicketCategory Category { get; set; } = null!;
+    public TicketCategoryModel Category { get; set; } = null!;
 
     [Required]
     public int PriorityId { get; set; }
-    public Priority Priority { get; set; } = null!;
+    public TicketPriorityModel Priority { get; set; } = null!;
 }
 }
