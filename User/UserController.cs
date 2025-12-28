@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HelpDesk.User;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/users")]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
@@ -17,12 +17,12 @@ public class UserController : ControllerBase
     }
 
 
-    [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAll()
+    [HttpGet]
+    public async Task<IActionResult> GetUsers(int page = 1, int size = 10, string? search = null)
     {
         try
         {
-            var users = await _userService.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersAsync(page, size, search);
             return Ok(users);
         }
         catch (Exception ex)
@@ -50,13 +50,13 @@ public class UserController : ControllerBase
     }
 
 
-    [HttpPost("create")]
-    public async Task<IActionResult> Create(UserCreateDTO userCreateDTO)
+    [HttpPost] // Changed from [HttpPost("create")]
+    public async Task<IActionResult> Create([FromBody]UserCreateRequest userCreateRequest)
     {
         try
         {
-            await _userService.CreateUserAsync(userCreateDTO);
-            return Ok(new { Message = "User created successfully." });
+            var createdUser = await _userService.CreateUserAsync(userCreateRequest);
+            return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, createdUser);
         }
         catch (Exception ex)
         {
@@ -74,7 +74,7 @@ public class UserController : ControllerBase
             if (user == null)
                 return Unauthorized(new { Error = "Invalid email or password." });
 
-            var userResponse = _mapper.Map<UserDTO>(user);
+            var userResponse = _mapper.Map<UserResponseDTO>(user);
 
             return Ok(userResponse);
         }
@@ -90,7 +90,7 @@ public class UserController : ControllerBase
         try
         {
             await _userService.DeleteUserAsync(id);
-            return Ok(new { Message = "User deleted successfully." });
+            return NoContent(); // 204 No Content as per spec
         }
         catch (Exception ex)
         {
@@ -99,12 +99,12 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id)
+    public async Task<IActionResult> Update(int id, [FromBody]UserUpdateRequest userUpdateRequest)
     {
         try
         {
-            await _userService.UpdateUserAsync(id);
-            return Ok(new { Message = "User updated successfully." });
+            var updatedUser = await _userService.UpdateUserAsync(id, userUpdateRequest);
+            return Ok(updatedUser);
         }
         catch (Exception ex)
         {

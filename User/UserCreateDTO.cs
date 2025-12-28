@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace HelpDesk.User;
 
 public class UserCreateDTO

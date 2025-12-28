@@ -11,28 +11,33 @@ public class UserService
         _mapper = mapper;
     }
 
-    public async Task CreateUserAsync(UserCreateDTO createUserDto)
+    public async Task<UserResponseDTO> CreateUserAsync(UserCreateRequest createUserRequest)
     {
-        var existingUser = await _repository.GetUserByEmailAsync(createUserDto.Email);
+        var existingUser = await _repository.GetUserByEmailAsync(createUserRequest.Email);
         if (existingUser != null)
         {
             throw new Exception("User with this email already exists.");
         }
-        var user = _mapper.Map<UserModel>(createUserDto);
-        user.Password = PasswordHasher.Hash(user.Password);
+        var user = _mapper.Map<UserModel>(createUserRequest);
+        
+        // Generate a default password for the new user or handle it as per business logic
+        user.Password = PasswordHasher.Hash("DefaultPassword123!"); // Example: Use a strong, generated default password
+        user.Role = "User"; // Assign a default role
+
         await _repository.AddUserAsync(user);
+        return _mapper.Map<UserResponseDTO>(user);
     }
 
-    public async Task<UserDTO?> GetUserByIdAsync(int id)
+    public async Task<UserResponseDTO?> GetUserByIdAsync(int id)
     {
         var user = await _repository.GetUserByIdAsync(id);
-        return user == null ? null : _mapper.Map<UserDTO>(user);
+        return user == null ? null : _mapper.Map<UserResponseDTO>(user);
     }
 
-    public async Task<UserDTO?> GetUserByEmailAsync(string email)
+    public async Task<UserResponseDTO?> GetUserByEmailAsync(string email)
     {
         var user = await _repository.GetUserByEmailAsync(email);
-        return user == null ? null : _mapper.Map<UserDTO>(user);
+        return user == null ? null : _mapper.Map<UserResponseDTO>(user);
     }
 
     public async Task<UserModel?> LoginAsync(UserLoginDTO loginDto)
@@ -45,10 +50,20 @@ public class UserService
         return user;
     }
 
-    public async Task<List<UserDTO>> GetAllUsersAsync()
+    public async Task<List<UserResponseDTO>> GetAllUsersAsync(int page, int size, string? search)
     {
-        var users = await _repository.GetAllUsersAsync();
-        return _mapper.Map<List<UserDTO>>(users);
+        var query = await _repository.GetAllUsersAsync();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(u => u.FirstName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                                     u.LastName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                                     u.Email.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        var users = query.Skip((page - 1) * size).Take(size).ToList();
+        
+        return _mapper.Map<List<UserResponseDTO>>(users);
     }
 
     public async Task DeleteUserAsync(int id)
@@ -61,14 +76,28 @@ public class UserService
         await _repository.DeleteUserAsync(user);
     }
 
-    public async Task UpdateUserAsync(int id)
+    public async Task<UserResponseDTO> UpdateUserAsync(int id, UserUpdateRequest userUpdateRequest)
     {
         var user = await _repository.GetUserByIdAsync(id);
         if (user == null)
         {
             throw new Exception("User not found.");
         }
+
+        // Apply updates from DTO to UserModel
+        if (!string.IsNullOrEmpty(userUpdateRequest.Name))
+        {
+            user.FirstName = userUpdateRequest.Name;
+            // Assuming LastName is not part of the update request based on spec.
+            // If it should be handled, further logic is needed here.
+        }
+        if (!string.IsNullOrEmpty(userUpdateRequest.Email))
+        {
+            user.Email = userUpdateRequest.Email;
+        }
+
         await _repository.UpdateUserAsync(user);
+        return _mapper.Map<UserResponseDTO>(user);
     }
 
 }

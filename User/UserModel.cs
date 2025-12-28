@@ -17,5 +17,8 @@ public class UserModel
     [Required]
     public string Password { get; set; } = string.Empty;
 
+    [Required]
+    public string Role { get; set; } = "User"; // Default role
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
