@@ -2,9 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HelpDesk.TicketCategory;
 
-public class TicketCategoryDTO
+public class TicketCategoryCreateUpdateDTO
 {
-    public int Id { get; set; }
     [Required, MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 }

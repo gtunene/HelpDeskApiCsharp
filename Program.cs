@@ -14,9 +14,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TicketCategoryRepository>();
+builder.Services.AddScoped<TicketCategoryService>();
+builder.Services.AddScoped<TicketPriorityRepository>();
+builder.Services.AddScoped<TicketPriorityService>();
+builder.Services.AddScoped<TicketRepository>();
+builder.Services.AddScoped<TicketService>();
+builder.Services.AddScoped<TicketCommentRepository>();
+builder.Services.AddScoped<TicketCommentService>();
 builder.Services.AddControllers();
 
-builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddAutoMapper(typeof(UserProfile), typeof(TicketCategoryMapping), typeof(TicketPriorityMapping), typeof(TicketMapping), typeof(TicketCommentMapping));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

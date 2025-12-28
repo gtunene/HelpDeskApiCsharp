@@ -2,9 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HelpDesk.TicketPriority;
 
-public class TicketPriorityModel
+public class TicketPriorityCreateUpdateDTO
 {
-    public int Id { get; set; }
     [Required, MaxLength(50)]
     public string Level { get; set; } = string.Empty;
     [Required, Range(1, 3)]

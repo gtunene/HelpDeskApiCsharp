@@ -9,3 +9,4 @@ global using HelpDesk.Security;
 global using HelpDesk.Ticket;
 global using HelpDesk.TicketCategory;
 global using HelpDesk.TicketPriority;
+global using HelpDesk.TicketComment;
