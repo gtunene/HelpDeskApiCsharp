@@ -1,0 +1,6 @@
+@HelDeskApiC__HostAddress = http://localhost:5230
+
+GET {{HelDeskApiC__HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

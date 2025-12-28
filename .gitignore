@@ -1,0 +1,26 @@
+# --- .NET Build Folders ---
+# Ignore compiled code
+[Bb]in/
+[Oo]bj/
+
+# --- Environment Secrets (CRITICAL) ---
+# This ignores your DB_CONNECTION password
+.env
+
+# --- Visual Studio & VS Code ---
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# --- Databases ---
+# Ignore local database files if created
+*.db
+*.db-shm
+*.db-wal
+
+# --- Operating System ---
+Thumbs.db
+.DS_Store
