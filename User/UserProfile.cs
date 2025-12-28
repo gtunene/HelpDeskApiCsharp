@@ -3,7 +3,10 @@ public class UserProfile : Profile
 {
     public UserProfile()
     {
-        CreateMap<UserCreateDTO, UserModel>().ReverseMap();
-        CreateMap<UserLoginDTO, UserModel>().ReverseMap();
+        CreateMap<UserCreateDTO, UserModel>();
+        CreateMap<UserLoginDTO, UserModel>();
+
+        CreateMap<UserDTO, UserModel>();
+        CreateMap<UserModel, UserDTO>();
     }
 }

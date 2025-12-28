@@ -34,5 +34,41 @@ public class UserService
         var user = await _repository.GetUserByEmailAsync(email);
         return user == null ? null : _mapper.Map<UserDTO>(user);
     }
-    
+
+    public async Task<UserModel?> LoginAsync(UserLoginDTO loginDto)
+    {
+        var user = await _repository.GetUserByEmailAsync(loginDto.Email);
+        if (user == null || !PasswordHasher.Verify(loginDto.Password, user.Password))
+        {
+            return null;
+        }
+        return user;
+    }
+
+    public async Task<List<UserDTO>> GetAllUsersAsync()
+    {
+        var users = await _repository.GetAllUsersAsync();
+        return _mapper.Map<List<UserDTO>>(users);
+    }
+
+    public async Task DeleteUserAsync(int id)
+    {
+        var user = await _repository.GetUserByIdAsync(id);
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+        await _repository.DeleteUserAsync(user);
+    }
+
+    public async Task UpdateUserAsync(int id)
+    {
+        var user = await _repository.GetUserByIdAsync(id);
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+        await _repository.UpdateUserAsync(user);
+    }
+
 }

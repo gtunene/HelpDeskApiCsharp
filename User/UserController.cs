@@ -16,43 +16,21 @@ public class UserController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost]
-    [Route("create")]
-    public async Task<IActionResult> Create(UserCreateDTO userCreateDTO)
+
+    [HttpGet("GetAll")]
+    public async Task<IActionResult> GetAll()
     {
         try
         {
-            await _userService.CreateUserAsync(userCreateDTO);
-            return Ok(new { Message = "User created successfully." });
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
         }
         catch (Exception ex)
         {
             return BadRequest(new { Error = ex.Message });
         }
     }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
-    {
-        try
-        {
-            var user = await _userService.GetUserByEmailAsync(userLoginDTO.Email);
-
-            if (user == null)
-                return NotFound(new { Error = "User not found." });
-
-            // BEST PRACTICE: Map the User model back to a safe DTO before sending
-            var userResponse = _mapper.Map<UserDTO>(user);
-
-            return Ok(userResponse);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { Error = ex.Message });
-        }
-    }
-
-
+    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -72,9 +50,65 @@ public class UserController : ControllerBase
     }
 
 
+    [HttpPost("create")]
+    public async Task<IActionResult> Create(UserCreateDTO userCreateDTO)
+    {
+        try
+        {
+            await _userService.CreateUserAsync(userCreateDTO);
+            return Ok(new { Message = "User created successfully." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Error = ex.Message });
+        }
+    }
 
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(UserLoginDTO userLoginDTO)
+    {
+        try
+        {
+            var user = await _userService.LoginAsync(userLoginDTO);
 
+            if (user == null)
+                return Unauthorized(new { Error = "Invalid email or password." });
+
+            var userResponse = _mapper.Map<UserDTO>(user);
+
+            return Ok(userResponse);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Error = ex.Message });
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            await _userService.DeleteUserAsync(id);
+            return Ok(new { Message = "User deleted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Error = ex.Message });
+        }
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id)
+    {
+        try
+        {
+            await _userService.UpdateUserAsync(id);
+            return Ok(new { Message = "User updated successfully." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Error = ex.Message });
+        }
+    }
 }
-
-
-

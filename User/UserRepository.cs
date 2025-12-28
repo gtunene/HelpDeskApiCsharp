@@ -25,4 +25,21 @@ public class UserRepository
         return await _context.Users
             .FirstOrDefaultAsync(u => u.Id == id);
     }
+
+    public async Task<List<UserModel>> GetAllUsersAsync()
+    {
+        return await _context.Users.ToListAsync();
+    }
+
+    public async Task DeleteUserAsync(UserModel user)
+    {
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateUserAsync(UserModel user)
+    {
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+    }
 }
