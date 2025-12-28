@@ -6,9 +6,9 @@ namespace HelpDesk.TicketPriority;
 [Route("api/priorities")]
 public class TicketPriorityController : ControllerBase
 {
-    private readonly TicketPriorityService _service;
+    private readonly ITicketPriorityService _service;
 
-    public TicketPriorityController(TicketPriorityService service)
+    public TicketPriorityController(ITicketPriorityService service)
     {
         _service = service;
     }

@@ -4,12 +4,12 @@ using HelpDesk.User;
 
 namespace HelpDesk.TicketComment;
 
-public class TicketCommentService
+public class TicketCommentService : ITicketCommentService
 {
-    private readonly TicketCommentRepository _repository;
+    private readonly ITicketCommentRepository _repository;
     private readonly IMapper _mapper;
 
-    public TicketCommentService(TicketCommentRepository repository, IMapper mapper)
+    public TicketCommentService(ITicketCommentRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -21,28 +21,16 @@ public class TicketCommentService
         return _mapper.Map<List<TicketCommentDTO>>(comments);
     }
 
-    public async Task<TicketCommentDTO?> GetByIdAsync(int id)
-    {
-        var comment = await _repository.GetByIdAsync(id);
-        return comment == null ? null : _mapper.Map<TicketCommentDTO>(comment);
-    }
-
     public async Task<TicketCommentDTO> CreateAsync(int ticketId, TicketCommentCreateDTO commentDto)
     {
         var comment = _mapper.Map<TicketCommentModel>(commentDto);
         comment.TicketId = ticketId;
-        await _repository.AddAsync(comment);
-        return _mapper.Map<TicketCommentDTO>(comment);
+        var newComment = await _repository.CreateAsync(comment);
+        return _mapper.Map<TicketCommentDTO>(newComment);
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var comment = await _repository.GetByIdAsync(id);
-        if (comment == null)
-        {
-            return false;
-        }
-        await _repository.DeleteAsync(comment);
-        return true;
+        return await _repository.DeleteAsync(id);
     }
 }

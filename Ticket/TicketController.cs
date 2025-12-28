@@ -6,9 +6,9 @@ namespace HelpDesk.Ticket;
 [Route("api/tickets")]
 public class TicketController : ControllerBase
 {
-    private readonly TicketService _service;
+    private readonly ITicketService _service;
 
-    public TicketController(TicketService service)
+    public TicketController(ITicketService service)
     {
         _service = service;
     }
@@ -54,6 +54,35 @@ public class TicketController : ControllerBase
             return NotFound();
         }
         return Ok(updatedTicket);
+    }
+
+
+    [HttpGet("priority/{priorityId}")]
+    public async Task<IActionResult> GetTicketsByPriority(int priorityId)
+    {
+        var tickets = await _service.GetAllAsync(1, 100, null, null, null, priorityId, null);
+        return Ok(tickets);
+    }
+
+    [HttpGet("category/{categoryId}")]
+    public async Task<IActionResult> GetTicketsByCategory(int categoryId)
+    {
+        var tickets = await _service.GetAllAsync(1, 100, null, null, categoryId, null, null);
+        return Ok(tickets);
+    }
+
+    [HttpGet("status/{status}")]
+    public async Task<IActionResult> GetTicketsByStatus(string status)
+    {
+        var tickets = await _service.GetAllAsync(1, 100, status, null, null, null, null);
+        return Ok(tickets);
+    }
+
+    [HttpGet("/api/users/{userId}/tickets")]
+    public async Task<IActionResult> GetTicketsForUser(int userId)
+    {
+        var tickets = await _service.GetAllAsync(1, 100, null, userId, null, null, null);
+        return Ok(tickets);
     }
 
     [HttpDelete("{id}")]

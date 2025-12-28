@@ -2,12 +2,12 @@ using AutoMapper;
 
 namespace HelpDesk.TicketCategory;
 
-public class TicketCategoryService
+public class TicketCategoryService : ITicketCategoryService
 {
-    private readonly TicketCategoryRepository _repository;
+    private readonly ITicketCategoryRepository _repository;
     private readonly IMapper _mapper;
 
-    public TicketCategoryService(TicketCategoryRepository repository, IMapper mapper)
+    public TicketCategoryService(ITicketCategoryRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -19,39 +19,29 @@ public class TicketCategoryService
         return _mapper.Map<List<TicketCategoryDTO>>(categories);
     }
 
-    public async Task<TicketCategoryDTO?> GetByIdAsync(int id)
+    public async Task<TicketCategoryDTO> GetByIdAsync(int id)
     {
         var category = await _repository.GetByIdAsync(id);
-        return category == null ? null : _mapper.Map<TicketCategoryDTO>(category);
+        return _mapper.Map<TicketCategoryDTO>(category);
     }
 
     public async Task<TicketCategoryDTO> CreateAsync(TicketCategoryCreateUpdateDTO categoryDto)
     {
         var category = _mapper.Map<TicketCategoryModel>(categoryDto);
-        await _repository.AddAsync(category);
-        return _mapper.Map<TicketCategoryDTO>(category);
+        var newCategory = await _repository.CreateAsync(category);
+        return _mapper.Map<TicketCategoryDTO>(newCategory);
     }
 
-    public async Task<TicketCategoryDTO?> UpdateAsync(int id, TicketCategoryCreateUpdateDTO categoryDto)
+    public async Task<TicketCategoryDTO> UpdateAsync(int id, TicketCategoryCreateUpdateDTO categoryDto)
     {
         var category = await _repository.GetByIdAsync(id);
-        if (category == null)
-        {
-            return null;
-        }
         _mapper.Map(categoryDto, category);
-        await _repository.UpdateAsync(category);
-        return _mapper.Map<TicketCategoryDTO>(category);
+        var updatedCategory = await _repository.UpdateAsync(category);
+        return _mapper.Map<TicketCategoryDTO>(updatedCategory);
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var category = await _repository.GetByIdAsync(id);
-        if (category == null)
-        {
-            return false;
-        }
-        await _repository.DeleteAsync(category);
-        return true;
+        return await _repository.DeleteAsync(id);
     }
 }

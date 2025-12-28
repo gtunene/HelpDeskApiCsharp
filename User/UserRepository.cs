@@ -1,6 +1,9 @@
+using HelpDesk.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace HelpDesk.User;
 
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     private readonly ApplicationDbContext _context;
 
@@ -20,10 +23,10 @@ public class UserRepository
             .FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<UserModel?> GetUserByIdAsync(int id)
+    public async Task<UserModel> GetByIdAsync(int id)
     {
         return await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == id);
+            .FirstOrDefaultAsync(u => u.Id == id) ?? throw new KeyNotFoundException("User not found");
     }
 
     public async Task<List<UserModel>> GetAllUsersAsync()

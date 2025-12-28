@@ -6,9 +6,9 @@ namespace HelpDesk.TicketComment;
 [Route("api")] // Base route to handle both /api/tickets/{id}/comments and /api/comments/{id}
 public class TicketCommentController : ControllerBase
 {
-    private readonly TicketCommentService _service;
+    private readonly ITicketCommentService _service;
 
-    public TicketCommentController(TicketCommentService service)
+    public TicketCommentController(ITicketCommentService service)
     {
         _service = service;
     }

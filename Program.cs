@@ -12,16 +12,16 @@ var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<TicketCategoryRepository>();
-builder.Services.AddScoped<TicketCategoryService>();
-builder.Services.AddScoped<TicketPriorityRepository>();
-builder.Services.AddScoped<TicketPriorityService>();
-builder.Services.AddScoped<TicketRepository>();
-builder.Services.AddScoped<TicketService>();
-builder.Services.AddScoped<TicketCommentRepository>();
-builder.Services.AddScoped<TicketCommentService>();
+builder.Services.AddScoped<ITicketCategoryRepository, TicketCategoryRepository>();
+builder.Services.AddScoped<ITicketCategoryService, TicketCategoryService>();
+builder.Services.AddScoped<ITicketPriorityRepository, TicketPriorityRepository>();
+builder.Services.AddScoped<ITicketPriorityService, TicketPriorityService>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
+builder.Services.AddScoped<ITicketCommentService, TicketCommentService>();
 builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(typeof(UserProfile), typeof(TicketCategoryMapping), typeof(TicketPriorityMapping), typeof(TicketMapping), typeof(TicketCommentMapping));

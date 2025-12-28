@@ -6,7 +6,7 @@ using HelpDesk.User;
 
 namespace HelpDesk.Ticket;
 
-public class TicketService
+public class TicketService : ITicketService
 {
     private readonly TicketRepository _repository;
     private readonly IMapper _mapper;
@@ -33,8 +33,8 @@ public class TicketService
     {
         var ticket = _mapper.Map<TicketModel>(ticketDto);
         ticket.Status = "OPEN"; // Default status for new tickets
-        await _repository.AddAsync(ticket);
-        return _mapper.Map<TicketDTO>(ticket);
+        var newTicket = await _repository.CreateAsync(ticket);
+        return _mapper.Map<TicketDTO>(newTicket);
     }
 
     public async Task<TicketDTO?> UpdateAsync(int id, TicketUpdateDTO ticketDto)
@@ -48,18 +48,12 @@ public class TicketService
         _mapper.Map(ticketDto, ticket);
         ticket.UpdatedAt = DateTime.UtcNow; // Update timestamp on modification
 
-        await _repository.UpdateAsync(ticket);
-        return _mapper.Map<TicketDTO>(ticket);
+        var updatedTicket = await _repository.UpdateAsync(ticket);
+        return _mapper.Map<TicketDTO>(updatedTicket);
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var ticket = await _repository.GetByIdAsync(id);
-        if (ticket == null)
-        {
-            return false;
-        }
-        await _repository.DeleteAsync(ticket);
-        return true;
+        return await _repository.DeleteAsync(id);
     }
 }

@@ -1,11 +1,13 @@
+using AutoMapper;
+
 namespace HelpDesk.User;
 
 public class UserService
 {
-    private readonly UserRepository _repository;
+    private readonly IUserRepository _repository;
     private readonly IMapper _mapper;
 
-    public UserService(UserRepository repository, IMapper mapper)
+    public UserService(IUserRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -30,7 +32,7 @@ public class UserService
 
     public async Task<UserResponseDTO?> GetUserByIdAsync(int id)
     {
-        var user = await _repository.GetUserByIdAsync(id);
+        var user = await _repository.GetByIdAsync(id);
         return user == null ? null : _mapper.Map<UserResponseDTO>(user);
     }
 
@@ -68,7 +70,7 @@ public class UserService
 
     public async Task DeleteUserAsync(int id)
     {
-        var user = await _repository.GetUserByIdAsync(id);
+        var user = await _repository.GetByIdAsync(id);
         if (user == null)
         {
             throw new Exception("User not found.");
@@ -78,7 +80,7 @@ public class UserService
 
     public async Task<UserResponseDTO> UpdateUserAsync(int id, UserUpdateRequest userUpdateRequest)
     {
-        var user = await _repository.GetUserByIdAsync(id);
+        var user = await _repository.GetByIdAsync(id);
         if (user == null)
         {
             throw new Exception("User not found.");
@@ -99,5 +101,4 @@ public class UserService
         await _repository.UpdateUserAsync(user);
         return _mapper.Map<UserResponseDTO>(user);
     }
-
 }

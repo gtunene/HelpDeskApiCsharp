@@ -2,12 +2,12 @@ using AutoMapper;
 
 namespace HelpDesk.TicketPriority;
 
-public class TicketPriorityService
+public class TicketPriorityService : ITicketPriorityService
 {
-    private readonly TicketPriorityRepository _repository;
+    private readonly ITicketPriorityRepository _repository;
     private readonly IMapper _mapper;
 
-    public TicketPriorityService(TicketPriorityRepository repository, IMapper mapper)
+    public TicketPriorityService(ITicketPriorityRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -19,15 +19,11 @@ public class TicketPriorityService
         return _mapper.Map<List<TicketPriorityDTO>>(priorities);
     }
 
-    public async Task<TicketPriorityDTO?> UpdateAsync(int id, TicketPriorityCreateUpdateDTO priorityDto)
+    public async Task<TicketPriorityDTO> UpdateAsync(int id, TicketPriorityCreateUpdateDTO priorityDto)
     {
         var priority = await _repository.GetByIdAsync(id);
-        if (priority == null)
-        {
-            return null;
-        }
         _mapper.Map(priorityDto, priority);
-        await _repository.UpdateAsync(priority);
-        return _mapper.Map<TicketPriorityDTO>(priority);
+        var updatedPriority = await _repository.UpdateAsync(priority);
+        return _mapper.Map<TicketPriorityDTO>(updatedPriority);
     }
 }

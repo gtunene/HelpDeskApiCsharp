@@ -19,6 +19,12 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <Compile Remove="HelpDeskApiCsharp.Tests\**" />
+    <Content Remove="HelpDeskApiCsharp.Tests\**" />
+    <EmbeddedResource Remove="HelpDeskApiCsharp.Tests\**" />
+    <None Remove="HelpDeskApiCsharp.Tests\**" />
+  </ItemGroup>
 
 </Project>

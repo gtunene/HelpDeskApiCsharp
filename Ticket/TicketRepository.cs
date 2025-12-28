@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HelpDesk.Ticket;
 
-public class TicketRepository
+public class TicketRepository : ITicketRepository
 {
     private readonly ApplicationDbContext _context;
 
@@ -48,30 +48,39 @@ public class TicketRepository
         return await query.Skip((page - 1) * size).Take(size).ToListAsync();
     }
 
-    public async Task<TicketModel?> GetByIdAsync(int id)
+    public async Task<TicketModel> GetByIdAsync(int id)
     {
         return await _context.Tickets
             .Include(t => t.User)
             .Include(t => t.Category)
             .Include(t => t.Priority)
-            .FirstOrDefaultAsync(t => t.Id == id);
+            .FirstOrDefaultAsync(t => t.Id == id) ?? throw new KeyNotFoundException("Ticket not found");
     }
-
-    public async Task AddAsync(TicketModel ticket)
+    
+    public async Task<TicketModel> CreateAsync(TicketModel ticket)
     {
         await _context.Tickets.AddAsync(ticket);
         await _context.SaveChangesAsync();
+        return ticket;
     }
 
-    public async Task UpdateAsync(TicketModel ticket)
+    public async Task<TicketModel> UpdateAsync(TicketModel ticket)
     {
         _context.Tickets.Update(ticket);
         await _context.SaveChangesAsync();
+        return ticket;
     }
 
-    public async Task DeleteAsync(TicketModel ticket)
+    public async Task<bool> DeleteAsync(int id)
     {
+        var ticket = await _context.Tickets.FindAsync(id);
+        if (ticket == null)
+        {
+            return false;
+        }
+
         _context.Tickets.Remove(ticket);
         await _context.SaveChangesAsync();
+        return true;
     }
 }

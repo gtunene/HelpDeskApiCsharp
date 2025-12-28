@@ -6,9 +6,9 @@ namespace HelpDesk.TicketCategory;
 [Route("api/categories")]
 public class TicketCategoryController : ControllerBase
 {
-    private readonly TicketCategoryService _service;
+    private readonly ITicketCategoryService _service;
 
-    public TicketCategoryController(TicketCategoryService service)
+    public TicketCategoryController(ITicketCategoryService service)
     {
         _service = service;
     }
