@@ -1,5 +1,3 @@
-using HelpDesk.User;
-
 namespace HelpDesk.User;
 
 public class UserRepository

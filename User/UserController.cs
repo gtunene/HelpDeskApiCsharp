@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using HelpDesk.User;
 
 namespace HelpDesk.User;
 

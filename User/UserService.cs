@@ -1,5 +1,4 @@
 using AutoMapper;
-using HelpDesk.User;
 
 namespace HelpDesk.User;
 

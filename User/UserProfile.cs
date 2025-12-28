@@ -1,5 +1,4 @@
-using AutoMapper; // Add this to fix the red squiggle
-using HelpDesk.User;
+using AutoMapper;
 
 namespace HelpDesk.User;
 
